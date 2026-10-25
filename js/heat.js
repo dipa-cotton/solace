@@ -1,0 +1,5 @@
+const LV=[{t:'Comfortable',c:'#30d158',a:'Conditions are comfortable.'},{t:'Caution',c:'#ffd60a',a:'Fatigue is possible with prolonged exposure. Drink water regularly.'},{t:'Extreme Caution',c:'#ff9f0a',a:'Heat cramps and exhaustion are possible. Take shade breaks and hydrate.'},{t:'Danger',c:'#ff453a',a:'Heat exhaustion is likely. Limit time outdoors and drink water often.'},{t:'Extreme Danger',c:'#bf5af2',a:'Extreme Danger. Get out of the heat immediately.'}];
+const lvl=f=>f<80?0:f<90?1:f<103?2:f<125?3:4;
+function hi(t,r){const s=.5*(t+61+(t-68)*1.2+r*.094);if((s+t)/2<80)return s;let h=-42.379+2.04901523*t+10.14333127*r-.22475541*t*r-.00683783*t*t-.05481717*r*r+.00122874*t*t*r+.00085282*t*r*r-.00000199*t*t*r*r;
+if(r<13&&t>=80&&t<=112)h-=((13-r)/4)*Math.sqrt((17-Math.abs(t-95))/17);else if(r>85&&t>=80&&t<=87)h+=((r-85)/10)*((87-t)/5);return h}
+const uvL=u=>u<3?['Low','#30d158']:u<6?['Moderate (wear sunscreen)','#ffd60a']:u<8?['High (cover up)','#ff9f0a']:u<11?['Very High (protect skin)','#ff453a']:['Extreme (avoid the sun)','#bf5af2'];

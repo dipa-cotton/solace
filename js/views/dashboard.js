@@ -1,0 +1,20 @@
+// ===== Dashboard screen =====
+function dash(){const r=S.reading,live=S.demo&&r;let h='';
+h+=`<div class="row"><div><h1>Solace ☼</h1><div class="mut">Find safety where you are</div></div><div class="sp"></div><button onclick="S.useC=!S.useC;save();render()">${S.useC?'Show °F':'Show °C'}</button></div>`;
+h+=banner();
+h+=`<div class="card row"><span class="dot" style="background:${S.demo?'var(--blu)':'var(--org)'}"></span><div><b>${S.demo?'DEMO DATA (not your sensors)':'Not connected'}</b><div class="sm ${S.demo?'mut':'org'}">${r?'Last valid reading: '+tm(r.t)+' ('+ago(Date.now()-r.t)+')':'No valid reading yet'}</div></div><div class="sp"></div>${S.demo?'<button class="p" onclick="stopDemo()">Stop demo</button>':'<button onclick="startDemo()">Demo</button>'}</div>`;
+if(live){const l=lvl(r.f),L=LV[l];h+=`<div class="card" style="background:${L.c}2e;border:1px solid ${L.c}99"><div class="row" style="align-items:flex-start"><div style="font-size:34px">${l>=3?'⚠️':l?'🌡️':'✅'}</div><div><h2 style="font-size:22px;margin:0">${L.t}</h2><div class="mut sm">${L.a}</div></div><div class="sp"></div><div><div class="big">${T(r.f)}</div><div class="mut sm" style="text-align:right">feels like</div></div></div>`;
+if(l>=3)h+=`<div class="row" style="margin-top:12px"><button class="red sp" onclick="go('safe')">Heat stroke help</button><button class="cy sp" onclick="go('safe');findPlaces();setTimeout(()=>$('#cool')?.scrollIntoView(),50)">Cool place</button></div>`;
+if(l==4)h+=`<a class="btn full" style="background:#fff;color:#000;margin-top:10px" href="tel:911">Call 911</a>`;h+='</div>'}
+else h+=`<div class="card" style="background:#ff9f0a26;border:1px solid #ff9f0a99"><h2>⚠️ No sensor data</h2><div class="mut">Until your sensor reports, conditions are unknown. Don’t assume they’re safe.</div><button style="margin-top:10px" onclick="go('safe')">Heat safety guide</button></div>`;
+if(!live)h+=areaCard();
+const u=r?uvL(r.uv):null;
+h+=`<div class="tiles" style="opacity:${live?1:.5}"><div class="tile"><span class="mut sm">Temperature</span><b>${r?T(r.temp):'--'}</b><span class="mut sm">air temperature</span></div><div class="tile"><span class="mut sm">UV index</span><b>${r?r.uv.toFixed(1):'--'}</b><span class="sm" style="color:${u?u[1]:'var(--mut)'}">${u?u[0]:'no data'}</span></div><div class="tile"><span class="mut sm">Humidity</span><b>${r?Math.round(r.h)+'%':'--'}</b><span class="mut sm">from sensor</span></div><div class="tile"><span class="mut sm">Light</span><b>${r?Math.round(r.lux)+' lx':'--'}</b><span class="mut sm">1013 hPa</span></div></div>`;
+h+=`<div class="card"><h2>Temperature alert</h2><div class="row"><span class="sm">Notify me at feels-like ${T(S.thr)}</span><div class="sp"></div><button onclick="S.thr=Math.max(70,S.thr-1);save();render()">−</button><button onclick="S.thr=Math.min(130,S.thr+1);save();render()">+</button></div>${notifUI()}</div>`;
+h+=`<div class="card"><h2>Feels-like trend</h2>${chart()}</div>`;
+h+=`<div class="card"><h2>Log</h2><div class="row"><button onclick="addW(8)">Log a drink</button><button onclick="addS()">I applied sunscreen</button></div>${S.water.length?`<div class="mut sm">Last drink ${ago(Date.now()-S.water[S.water.length-1].t)}</div>`:''}${S.sun.length?`<div class="mut sm">Sunscreen applied ${ago(Date.now()-S.sun[S.sun.length-1])}</div>`:''}</div>`;
+h+=`<div class="card"><h2>Alerts</h2>${S.alerts.length?S.alerts.map(a=>`<div class="alert"><b>${a.title}</b><div>${a.msg}</div><div class="mut sm">${tm(a.t)}</div></div>`).join(''):'<div class="mut">No alerts yet.</div>'}</div>`;return h}
+
+function chart(){const p=S.hist.map(r=>S.useC?(r.f-32)*5/9:r.f);if(p.length<2)return'<div class="mut" style="height:120px">Collecting data...</div>';
+const mn=Math.min(...p),mx=Math.max(...p),rg=mx-mn||1;const pts=p.map((v,i)=>(i/(p.length-1)*300).toFixed(1)+','+(70-(v-mn)/rg*60).toFixed(1)).join(' ');
+return`<svg viewBox="0 0 300 80" style="width:100%;height:160px"><polyline points="${pts}" fill="none" stroke="#fff" stroke-width="2"/></svg><div class="mut sm">${Math.round(mn)} to ${Math.round(mx)}</div>`}
