@@ -21,12 +21,7 @@ body {
   margin:0;
   background:var(--bg);
   color:var(--tx);
-.quicksand-<uniquifier> {
-  font-family: "Quicksand", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: <weight>;
-  font-style: normal;
-}
+  font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
 }
 main {
   max-width:760px;
